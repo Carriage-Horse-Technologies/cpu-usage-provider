@@ -1,14 +1,16 @@
 # cpu-usage-provider
-cpu使用率をダンプするPHP
+cpu使用率をダンプするPHPスクリプトです。
 
 ChatGPT駆動開発しました。（まあ、結局中身は自分で１から考えました）
 
-phpのビルドインサーバーで配信できます。
-
-`main.php`や`main2.php`は失敗作です。`main3.php`を使ってください。
+（`main.php`や`main2.php`は失敗作です。`main3.php`を使ってください。）
 
 ## 前提
-- phpやvmstatやawkが実行できる環境である必要があります
+以下を実行できる環境である必要があります
+
+- php4以上
+- vmstat
+- awk
 
 ## 実行方法
 
@@ -40,6 +42,26 @@ echo json_encode([
   'cpuutilization' => floatval($cpu_usage)
 ]);
 ```
+
+### 配信方法
+PHPのビルトインサーバーでできます。
+
+```bash
+php -S 0.0.0.0:8080 main3.php
+```
+
+ハッカソンではNginxをリバースプロキシとして設定して配信していました。
+
+```
+server {
+    server_name legacy-stack.yukinissie.com;
+
+    location /metrics/ {
+        proxy_pass    http://localhost:8080/;
+    }
+}
+```
+
 
 ---
 
