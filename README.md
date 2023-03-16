@@ -20,14 +20,26 @@ php main3.php
 実行すると下記のような結果が返却されます。
 
 ```json
-{"cpuutilization":0,"disk_read_bytes":0,"disk_write_bytes":0,"network_in":0,"network_out":0}
+{"cpuutilization":0}
 ```
 
 サーバーに負荷がかかると`cpuutilization`が`0~100`で変化します。
 
 ## 仕組み
 
-vmstatをawkで整形したものをPHPでexecしてJSONとしてechoしているだけです！
+vmstatをawkで整形したするコマンドをPHPでexecしてJSONとしてechoしているだけです！
+
+```php
+<?php
+
+$cpu_usage = shell_exec("echo $(vmstat 1 2 | awk 'NR>3{ print 100 - $15 }')");
+
+header('Content-Type: application/json');
+
+echo json_encode([
+  'cpuutilization' => floatval($cpu_usage)
+]);
+```
 
 ---
 
